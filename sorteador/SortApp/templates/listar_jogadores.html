@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Jogadores</h2>
+<a href="{% url 'cadastrar_jogador' %}" class="btn btn-success mb-3">+ Adicionar Jogador</a>
+<table id="tabelaJogadores" class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Nome</th>
+            <th>Classificacao (Pote)</th>
+            <th>Overall</th>
+            <th>Time</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for j in jogadores %}
+        <tr>
+            <td>{{ j.nome }}</td>
+            <td>{{ j.classificacao }}</td>
+            <td>{{ j.overall }}</td>
+            <td>
+                {% if j.time %}
+                    {{ j.time.nome}}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+            <td class="text-end">
+                <a href="{% url 'editar_jogador' j.id %}" class="text-muted" title="Editar">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

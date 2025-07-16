@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Times</h2>
+<a href="{% url 'cadastrar_time' %}" class="btn btn-success mb-3">+ Adicionar Time</a>
+<div class="row">
+    {% for time in times %}
+    <div class="col-md-4 mb-4">
+        <div class="card text-center shadow">
+            {% if time.escudo %}
+            <img src="{{ time.escudo.url }}" class="card-img-top" style="max-height: 150px; object-fit: contain;" alt="Escudo">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ time.nome }}</h5>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
