@@ -1,5 +1,5 @@
 <!-- templates/base.html -->
- {% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
+{% if request.path != '/' %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
         <a class="navbar-brand" href="{% url 'dashboard' %}">
@@ -23,6 +24,7 @@
         </div>
     </div>
 </nav>
+{% endif %}
 
 <div class="container">
     {% block content %}
@@ -38,11 +40,10 @@
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
             },
-            "order": [[1, "asc"]],  // ordena inicialmente pela coluna 2 (classificacao)
+            "order": [[0, "asc"]],
             "pageLength": 10
         });
     });
 </script>
-
 </body>
 </html>
