@@ -17,6 +17,7 @@
             <img src="{% static '/logoCCC.png' %}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">Sorteador</a>
         <div>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="{% url 'sortear_times' %}">Sortear Times</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'listar_jogadores' %}">Jogadores</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'listar_times' %}">Times</a></li>
                 <li class="nav-item"><a class="nav-link" href="/admin/">Administração</a></li>
