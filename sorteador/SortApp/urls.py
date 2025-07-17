@@ -11,4 +11,5 @@ urlpatterns = [
     path('sortear/', views.sortear_times, name='sortear_times'),
     path('sortear/refazer/', views.refazer_sorteio, name='refazer_sorteio'),
     path('sortear/salvar/', views.salvar_sorteio, name='salvar_sorteio'),
+    path('times/<int:time_id>/', views.detalhes_time, name='detalhes_time'),
 ]

@@ -11,7 +11,7 @@ class Jogador(models.Model):
     nome = models.CharField(max_length=100)
     classificacao = models.PositiveIntegerField()
     overall = models.PositiveIntegerField()
-    time = models.ForeignKey(Time, on_delete=models.SET_NULL, null=True, blank=True)
+    time = models.ForeignKey(Time, on_delete=models.SET_NULL, related_name='jogadores', null=True, blank=True)
 
     def __str__(self):
         return self.nome

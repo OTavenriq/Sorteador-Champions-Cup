@@ -133,13 +133,75 @@ def sortear_times(request):
 @csrf_exempt
 def salvar_sorteio(request):
     if request.method == 'POST':
-        sorteio = request.session.get('sorteio_atual')
-        if sorteio:
-            caminho = os.path.join(settings.BASE_DIR, 'sorteios_salvos')
-            os.makedirs(caminho, exist_ok=True)
-            with open(os.path.join(caminho, 'sorteio_salvo.json'), 'w', encoding='utf-8') as f:
-                json.dump(sorteio, f, ensure_ascii=False, indent=4)
-    return redirect('sortear_times')
+        jogadores = Jogador.objects.all()
+        for jogador in jogadores:
+            jogador.time = None
+            jogador.save()
+
+        # Faça o sorteio novamente e salve no banco
+        jogadores = list(Jogador.objects.all())
+        times = list(Time.objects.all())
+
+        potes = defaultdict(list)
+        for jogador in jogadores:
+            potes[jogador.classificacao].append(jogador)
+
+        num_times = len(times)
+        MAX_TENTATIVAS = 100
+        MARGEM_MAXIMA = 25
+
+        for tentativa in range(MAX_TENTATIVAS):
+            sorteio = {time.id: {'time': time, 'jogadores': [], 'overall': 0} for time in times}
+            usado_por_time = {time.id: set() for time in times}
+            sucesso = True
+
+            for pote, jogadores_pote in potes.items():
+                jogadores_disp = jogadores_pote[:]
+                random.shuffle(jogadores_disp)
+
+                for jogador in jogadores_disp:
+                    pesos = []
+                    candidatos = []
+
+                    for time_id, info in sorteio.items():
+                        if pote not in usado_por_time[time_id]:
+                            peso = 1 / (info['overall'] + 1)
+                            candidatos.append(time_id)
+                            pesos.append(peso)
+
+                    if not candidatos:
+                        sucesso = False
+                        break
+
+                    time_escolhido = random.choices(candidatos, weights=pesos, k=1)[0]
+                    sorteio[time_escolhido]['jogadores'].append(jogador)
+                    sorteio[time_escolhido]['overall'] += jogador.overall
+                    usado_por_time[time_escolhido].add(pote)
+
+                if not sucesso:
+                    break
+
+            if not sucesso:
+                continue
+
+            overalls = [info['overall'] for info in sorteio.values()]
+            margem = max(overalls) - min(overalls)
+
+            if margem <= MARGEM_MAXIMA:
+                # Aqui salvamos no banco:
+                for time_id, info in sorteio.items():
+                    time = info['time']
+                    time.overall = info['overall']
+                    time.save()
+                    for jogador in info['jogadores']:
+                        jogador.time = time
+                        jogador.save()
+                break
+        else:
+            return render(request, 'sorteador/resultado.html', {
+                'erro': f'Falha ao salvar sorteio com margem menor que {MARGEM_MAXIMA}.'})
+
+    return redirect('listar_times')
 
 @csrf_exempt
 def refazer_sorteio(request):
@@ -147,3 +209,13 @@ def refazer_sorteio(request):
         if 'sorteio_atual' in request.session:
             del request.session['sorteio_atual']
     return redirect('sortear_times')
+
+def detalhes_time(request, time_id):
+    time = get_object_or_404(Time, id=time_id)
+    jogadores = time.jogadores.all().order_by('classificacao', '-overall')
+    overall_total = sum(j.overall for j in jogadores)
+    return render(request, 'detalhes_time.html', {
+        'time': time,
+        'jogadores': jogadores,
+        'overall_total': overall_total,
+    })

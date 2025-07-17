@@ -7,7 +7,6 @@
         <div class="alert alert-warning text-center">{{ aviso }}</div>
     {% endif %}
 
-
     {% if erro %}
         <div class="alert alert-danger text-center">{{ erro }}</div>
     {% else %}
@@ -23,7 +22,14 @@
                             <ul class="list-group list-group-flush">
                                 {% for j in s.jogadores %}
                                     <li class="list-group-item bg-dark text-white d-flex justify-content-between">
-                                        {{ j.nome }} <span class="text-info">({{ j.overall }})</span>
+                                        {{ j.nome }}
+                                        <span class="text-info">
+                                            {% if j.classificacao == 1 %}
+                                                G
+                                            {% else %}
+                                                {{ j.classificacao }}
+                                            {% endif %}
+                                        </span>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -38,14 +44,16 @@
     {% endif %}
 </div>
 
-<div class="flex justify-end space-x-4 mb-4">
-    <form method="POST" action="{% url 'refazer_sorteio' %}">
-        {% csrf_token %}
-        <button class="bg-yellow-600 text-center font-bold py-2 px-4 rounded hover:bg-yellow-700">🔁 Refazer Sorteio</button>
-    </form>
-    <form method="POST" action="{% url 'salvar_sorteio' %}">
-        {% csrf_token %}
-        <button class="bg-green-600 text-center font-bold py-2 px-4 rounded hover:bg-green-700">💾 Salvar Sorteio</button>
-    </form>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between">
+        <form method="POST" action="{% url 'refazer_sorteio' %}">
+            {% csrf_token %}
+            <button class="bg-dark text-white font-bold py-2 px-4 rounded border border-light hover:bg-secondary">🔁 Refazer Sorteio</button>
+        </form>
+        <form method="POST" action="{% url 'salvar_sorteio' %}">
+            {% csrf_token %}
+            <button class="bg-success text-white font-bold py-2 px-4 rounded hover:bg-success-dark">💾 Salvar Sorteio</button>
+        </form>
+    </div>
 </div>
 {% endblock %}

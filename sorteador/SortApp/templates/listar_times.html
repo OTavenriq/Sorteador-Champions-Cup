@@ -6,14 +6,18 @@
 <div class="row">
     {% for time in times %}
     <div class="col-md-4 mb-4">
-        <div class="card text-center shadow">
-            {% if time.escudo %}
-            <img src="{{ time.escudo.url }}" class="card-img-top" style="max-height: 150px; object-fit: contain;" alt="Escudo">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ time.nome }}</h5>
+        <a href="{% url 'detalhes_time' time.id %}" style="text-decoration: none; color: inherit;">
+            <div class="card text-center shadow hover-expand">
+                {% if time.escudo %}
+                <img src="{{ time.escudo.url }}" class="card-img-top" style="max-height: 150px; object-fit: contain;" alt="Escudo">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ time.nome }}</h5>
+                    <!-- Exemplo opcional de mostrar overall total -->
+                    <!-- <p>Overall total: {{ time.overall }}</p> -->
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     {% endfor %}
 </div>
