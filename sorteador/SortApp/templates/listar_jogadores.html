@@ -2,7 +2,15 @@
 
 {% block content %}
 <h2>Jogadores</h2>
-<a href="{% url 'cadastrar_jogador' %}" class="btn btn-success mb-3">+ Adicionar Jogador</a>
+<div class="d-flex justify-content-between mb-3">
+    <a href="{% url 'cadastrar_jogador' %}" class="btn btn-success">+ Adicionar Jogador</a>
+
+    <form method="post" action="{% url 'excluir_todos_jogadores' %}" onsubmit="return confirm('Tem certeza que deseja excluir TODOS os jogadores?');">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Excluir Todos</button>
+    </form>
+</div>
+
 <table id="tabelaJogadores" class="table table-bordered table-hover">
     <thead class="table-dark">
         <tr>
@@ -21,7 +29,7 @@
             <td>{{ j.overall }}</td>
             <td>
                 {% if j.time %}
-                    {{ j.time.nome}}
+                    {{ j.time.nome }}
                 {% else %}
                     —
                 {% endif %}

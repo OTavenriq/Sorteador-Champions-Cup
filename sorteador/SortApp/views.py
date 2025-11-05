@@ -6,6 +6,7 @@ from .models import Jogador, Time
 from .forms import JogadorForm, TimeForm
 from django.shortcuts import get_object_or_404
 from collections import defaultdict
+from django.contrib import messages
 
 def dashboard(request):
     total_jogadores = Jogador.objects.count()
@@ -219,3 +220,10 @@ def detalhes_time(request, time_id):
         'jogadores': jogadores,
         'overall_total': overall_total,
     })
+
+@csrf_exempt
+def excluir_todos_jogadores(request):
+    if request.method == 'POST':
+        Jogador.objects.all().delete()
+        messages.success(request, 'Todos os jogadores foram excluídos com sucesso!')
+    return redirect('listar_jogadores')
