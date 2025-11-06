@@ -18,34 +18,37 @@
 
   <h2 class="mb-3">Jogadores</h2>
 
-  <div class="list-group">
-    {% for jogador in jogadores %}
-      <div class="list-group-item d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center gap-2">
-          <div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">
-            {% if jogador.classificacao == 1 %}
-              <span title="Goleiro" style="font-size: 1.2rem;">🥅</span>
-            {% elif jogador.classificacao == 2 %}
-              <span class="badge bg-warning text-dark fw-bold" title="Capitão" style="font-family: monospace; font-size: 1.1rem; vertical-align: middle;">C</span>
-            {% else %}
-              <span style="display: inline-block; width: 24px;"></span>
-            {% endif %}
-          </div>
-          <span>{{ jogador.nome }}</span>
-        </div>
-
-        <span class="text-info fw-bold">
+<div class="list-group">
+  {% for jogador in jogadores %}
+    <div class="list-group-item d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2">
+        <div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">
           {% if jogador.classificacao == 1 %}
-            G
+            <span title="Goleiro" style="font-size: 1.2rem;">🥅</span>
+          {% elif jogador.classificacao == 2 %}
+            <span class="badge bg-warning text-dark fw-bold" title="Capitão" style="font-family: monospace; font-size: 1.1rem; vertical-align: middle;">C</span>
+          {% elif jogador.classificacao >= 3 %}
+            <span title="Jogador de Linha" style="font-size: 1.2rem;">👕</span>
           {% else %}
-            {{ jogador.classificacao }}
+            <span style="display: inline-block; width: 24px;"></span>
           {% endif %}
-        </span>
+        </div>
+        <span>{{ jogador.nome }}</span>
       </div>
-    {% empty %}
-      <p class="text-muted">Nenhum jogador cadastrado neste time.</p>
-    {% endfor %}
-  </div>
+
+      <span class="text-info fw-bold">
+        {% if jogador.classificacao == 1 %}
+          G
+        {% else %}
+          {{ jogador.classificacao }}
+        {% endif %}
+      </span>
+    </div>
+  {% empty %}
+    <p class="text-muted">Nenhum jogador cadastrado neste time.</p>
+  {% endfor %}
+</div>
+
 
   <div class="mt-4">
     <a href="{% url 'listar_times' %}" class="btn btn-outline-secondary">&larr; Voltar para lista de times</a>
