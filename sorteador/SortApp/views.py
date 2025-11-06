@@ -139,7 +139,6 @@ def salvar_sorteio(request):
             jogador.time = None
             jogador.save()
 
-        # Faça o sorteio novamente e salve no banco
         jogadores = list(Jogador.objects.all())
         times = list(Time.objects.all())
 
@@ -189,7 +188,6 @@ def salvar_sorteio(request):
             margem = max(overalls) - min(overalls)
 
             if margem <= MARGEM_MAXIMA:
-                # Aqui salvamos no banco:
                 for time_id, info in sorteio.items():
                     time = info['time']
                     time.overall = info['overall']
