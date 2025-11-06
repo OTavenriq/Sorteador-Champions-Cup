@@ -1,48 +1,95 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
+<style>
+  body {
+    background: linear-gradient(to bottom, #0d1b2a, #1b263b);
+    color: white;
+    font-family: 'Arial', sans-serif;
+  }
 
+  .card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 180, 216, 0.25);
+  }
+
+  .numero-time {
+    background: linear-gradient(135deg, #0077b6, #00b4d8);
+    color: white;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    text-align: center;
+    display: inline-block;
+    min-width: 55px;
+  }
+
+  .d-flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .list-group-item {
+    background-color: transparent;
+    border: none;
+    color: white;
+  }
+</style>
+
+<div class="container">
   <h2 class="mb-4 text-center">Todos os Times e Jogadores</h2>
 
   <!-- Grid responsivo -->
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    {% for time in times %}
-    <div class="col">
-      <div class="card h-100 shadow-sm border-0">
-        <div class="card-body">
-          <div class="d-flex align-items-center mb-3 gap-3">
-            {% if time.escudo %}
-              <img src="{{ time.escudo.url }}" alt="Escudo de {{ time.nome }}" 
-                   style="height: 60px; width: auto;">
-            {% endif %}
-            <h4 class="mb-0">{{ time.nome }}</h4>
-          </div>
-
-          <div class="list-group">
-            {% for jogador in time.jogadores.all %}
-              <div class="list-group-item d-flex align-items-center justify-content-between p-2">
-                <div class="d-flex align-items-center gap-2">
-                  <div style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
-                    {% if jogador.classificacao == 1 %}
-                      <span title="Goleiro" style="font-size: 1rem;">🥅</span>
-                    {% elif jogador.classificacao == 2 %}
-                      <span class="badge bg-warning text-dark fw-bold" title="Capitão" 
-                            style="font-family: monospace; font-size: 0.9rem;">C</span>
-                    {% elif jogador.classificacao >= 3 %}
-                      <span title="Jogador de Linha" style="font-size: 1rem;">👕</span>
-                    {% endif %}
-                  </div>
-                  <span style="font-size: 0.95rem;">{{ jogador.nome }}</span>
-                </div>
+    {% for item in times_com_overall %}
+      {% with time=item.obj overall_total=item.overall_total %}
+      <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <div class="d-flex-between mb-3">
+              <div class="d-flex align-items-center gap-3">
+                {% if time.escudo %}
+                  <img src="{{ time.escudo.url }}" alt="Escudo de {{ time.nome }}" 
+                       style="height: 60px; width: auto;">
+                {% endif %}
+                <h4 class="mb-0">{{ time.nome }}</h4>
               </div>
-            {% empty %}
-              <p class="text-muted text-center small mt-2">Nenhum jogador cadastrado.</p>
-            {% endfor %}
+              <span class="numero-time">{{ overall_total }}</span>
+            </div>
+
+            <div class="list-group">
+              {% for jogador in time.jogadores.all %}
+                <div class="list-group-item d-flex align-items-center justify-content-between p-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <div style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
+                      {% if jogador.classificacao == 1 %}
+                        <span title="Goleiro" style="font-size: 1rem;">🥅</span>
+                      {% elif jogador.classificacao == 2 %}
+                        <span class="badge bg-warning text-dark fw-bold" title="Capitão" 
+                              style="font-family: monospace; font-size: 0.9rem;">C</span>
+                      {% elif jogador.classificacao >= 3 %}
+                        <span title="Jogador de Linha" style="font-size: 1rem;">👕</span>
+                      {% endif %}
+                    </div>
+                    <span style="font-size: 0.95rem;">{{ jogador.nome }}</span>
+                  </div>
+                </div>
+              {% empty %}
+                <p class="text-muted text-center small mt-2">Nenhum jogador cadastrado.</p>
+              {% endfor %}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      {% endwith %}
     {% empty %}
       <p class="text-muted text-center">Nenhum time cadastrado.</p>
     {% endfor %}

@@ -228,7 +228,22 @@ def excluir_todos_jogadores(request):
 
 def listar_times_completos(request):
     times = Time.objects.prefetch_related('jogadores').all()
+    times_com_overall = []
+
+    for time in times:
+        jogadores = time.jogadores.all()
+        if jogadores.exists():
+            soma = sum(j.overall for j in jogadores)
+            media = round(soma / len(jogadores), 1)
+        else:
+            media = 0
+
+        times_com_overall.append({
+            'obj': time,
+            'overall_total': media
+        })
+
     context = {
-        'times': times,
+        'times_com_overall': times_com_overall,
     }
     return render(request, 'times_completos.html', context)
