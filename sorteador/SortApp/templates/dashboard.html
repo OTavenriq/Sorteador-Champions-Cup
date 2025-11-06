@@ -2,124 +2,90 @@
 {% load static %}
 
 {% block content %}
-<style>
-    body {
-        background: linear-gradient(to bottom, #0d1b2a, #1b263b);
-        color: #ffffff;
-    }
+<div class="container py-4">
 
-    .dashboard-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-        margin-top: 40px;
-        margin-bottom: 40px;
-        flex-wrap: wrap;
-        text-align: center;
-    }
-
-    .logo-torneio {
-        max-width: 100px;
-    }
-
-    .titulo-torneio {
-        font-size: 2.7rem;
-        font-weight: bold;
-        border-bottom: 3px solid #e63946;
-        padding-bottom: 10px;
-    }
-
-    .dashboard-card {
-        background-color: #1b263b;
-        border: 1px solid #415a77;
-        border-radius: 15px;
-        text-align: center;
-        padding: 30px 20px;
-        color: #ffffff;
-        transition: all 0.3s ease-in-out;
-        height: 100%;
-    }
-
-    .dashboard-card:hover {
-        transform: scale(1.05);
-        box-shadow: 0px 8px 20px rgba(255, 255, 255, 0.15);
-        background-color: #2b3548;
-    }
-
-    .dashboard-icon {
-        font-size: 60px;
-        color: #e63946;
-        margin-bottom: 15px;
-    }
-
-    .sobre-torneio {
-        background-color: #0d1b2a;
-        border-left: 4px solid #e63946;
-        padding: 20px;
-        margin-top: 60px;
-        border-radius: 8px;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .sobre-torneio h4 {
-        margin-bottom: 10px;
-        color: #f1faee;
-    }
-
-    .container-dashboard {
-        max-width: 1000px;
-        margin: 0 auto;
-    }
-</style>
-
-<div class="container container-dashboard">
-
-    <div class="dashboard-header">
-        <img src="{% static 'logoCCC.png' %}" alt="Logo Cedro Champions Cup" class="logo-torneio">
-        <h1 class="titulo-torneio">Cedro Champions Cup</h1>
+    <!-- Cabeçalho -->
+    <div class="text-center mb-5">
+        <img src="{% static 'logoCCC.png' %}" alt="Logo Cedro Champions Cup" style="max-width: 120px;">
+        <h1 class="text-light fw-bold mt-3" style="font-size: 2.5rem; border-bottom: 3px solid #f1f1f1; display: inline-block; padding-bottom: 8px;">
+            Cedro Champions Cup
+        </h1>
     </div>
 
-    <div class="row justify-content-center g-4">
+    <!-- Cards principais -->
+    <div class="row g-4 justify-content-center">
         <div class="col-md-5">
-            <a href="{% url 'listar_jogadores' %}" class="text-decoration-none">
-                <div class="dashboard-card">
-                    <div class="dashboard-icon">
-                        <i class="bi bi-person-lines-fill"></i>
-                    </div>
-                    <h4>Visualizar Jogadores</h4>
+            <a href="{% url 'listar_jogadores' %}" style="text-decoration: none; color: inherit;">
+                <div class="card shadow-sm hover-expand border-0 text-center p-4" style="background-color: #1b263b;">
+                    <i class="bi bi-person-lines-fill text-secondary" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3 text-light">Visualizar Jogadores</h5>
                 </div>
             </a>
         </div>
-
         <div class="col-md-5">
-            <a href="{% url 'listar_times' %}" class="text-decoration-none">
-                <div class="dashboard-card">
-                    <div class="dashboard-icon">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <h4>Visualizar Times</h4>
+            <a href="{% url 'listar_times' %}" style="text-decoration: none; color: inherit;">
+                <div class="card shadow-sm hover-expand border-0 text-center p-4" style="background-color: #1b263b;">
+                    <i class="bi bi-people-fill text-secondary" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3 text-light">Visualizar Times</h5>
                 </div>
             </a>
         </div>
     </div>
 
+    <!-- Botão sortear times -->
     <div class="text-center mt-4">
-        <a href="{% url 'sortear_times' %}" class="btn btn-danger btn-lg">
+        <a href="{% url 'sortear_times' %}" class="btn btn-secondary btn-lg">
             <i class="bi bi-shuffle me-2"></i> Sortear Times
         </a>
     </div>
 
-    <div class="sobre-torneio">
-        <h4>Sobre o Torneio</h4>
-        <p>
-            A <strong>Cedro Champions Cup</strong> é um torneio de futsal entre amigos que valoriza a emoção do esporte,
-            promovendo equilíbrio entre os times através de sorteios justos com base na classificação e nível dos jogadores.
-            Um sistema transparente para garantir a isonomia do campeonato.
-        </p>
+    <!-- Sobre o torneio -->
+    <div class="card shadow-sm border-0 mt-5" style="background-color: #1b263b;">
+        <div class="card-header bg-secondary text-light fw-bold text-center">
+            Sobre o Torneio
+        </div>
+        <div class="card-body text-center text-light">
+            <p class="mb-0">
+                A <strong>Cedro Champions Cup</strong> é um torneio de futsal entre amigos que valoriza a emoção do esporte,
+                promovendo equilíbrio entre os times através de sorteios justos com base na classificação e nível dos jogadores.
+                Um sistema transparente para garantir a isonomia do campeonato.
+            </p>
+        </div>
     </div>
 
 </div>
+
+<style>
+body {
+    background: linear-gradient(to bottom, #0d1b2a, #1b263b);
+    color: #f1f1f1;
+}
+
+/* Efeito hover nos cards */
+.hover-expand {
+    transition: all 0.3s ease-in-out;
+}
+.hover-expand:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 8px 20px rgba(255, 255, 255, 0.15);
+    background-color: #2b3548;
+}
+
+/* Botões */
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #f1f1f1;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    color: #ffffff;
+}
+
+/* Ícones */
+.text-secondary {
+    color: #c0c0c0 !important;
+}
+</style>
 {% endblock %}

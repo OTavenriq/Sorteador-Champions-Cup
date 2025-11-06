@@ -1,4 +1,3 @@
-<!-- templates/base.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -8,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <style>
     .hover-expand {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -17,21 +18,89 @@
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         z-index: 2;
     }
+
+    /* Modos claro e escuro */
+    body.light-mode {
+        background: #f8f9fa;
+        color: #212529;
+    }
+    body.light-mode .card {
+        background-color: #ffffff;
+        color: #212529;
+    }
+    body.light-mode .card-header {
+        background-color: #e9ecef;
+        color: #212529;
+    }
+    body.light-mode .btn-secondary {
+        background-color: #6c757d;
+        color: #f8f9fa;
+    }
+
+    body.dark-mode {
+        background: linear-gradient(to bottom, #0d1b2a, #1b263b);
+        color: #f1f1f1;
+    }
+    body.dark-mode .card {
+        background-color: #1b263b;
+        color: #f1f1f1;
+    }
+    body.dark-mode .card-header {
+        background-color: #6c757d;
+        color: #f1f1f1;
+    }
+    body.dark-mode .btn-secondary {
+        background-color: #6c757d;
+        color: #f1f1f1;
+    }
+
+    /* DataTables Modo Escuro */
+    table.dataTable.dark-mode {
+        background-color: #2b3548 !important;
+        color: #f1f1f1 !important;
+    }
+    table.dataTable.dark-mode thead th {
+        background-color: #3a4a5a !important;
+        color: #f1f1f1 !important;
+    }
+    table.dataTable.dark-mode tbody tr {
+        background-color: #2b3548 !important;
+        color: #f1f1f1 !important;
+    }
+    table.dataTable.dark-mode tbody tr:hover {
+        background-color: #415a77 !important;
+    }
+    table.dataTable.dark-mode .paginate_button {
+        background-color: #1b263b !important;
+        color: #f1f1f1 !important;
+        border: none !important;
+    }
+    table.dataTable.dark-mode .paginate_button.current {
+        background-color: #6c757d !important;
+        color: #ffffff !important;
+    }
     </style>
 </head>
 <body>
+
 {% if request.path != '/' %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
         <a class="navbar-brand" href="{% url 'dashboard' %}">
-            <img src="{% static '/logoCCC.png' %}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">Sorteador</a>
-        <div>
+            <img src="{% static '/logoCCC.png' %}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">Sorteador
+        </a>
+        <div class="d-flex align-items-center">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="{% url 'sortear_times' %}">Sortear Times</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'listar_jogadores' %}">Jogadores</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'listar_times' %}">Times</a></li>
                 <li class="nav-item"><a class="nav-link" href="/admin/">Administração</a></li>
             </ul>
+
+            <!-- Toggle Dark/Light Mode -->
+            <button id="toggle-theme" class="btn btn-outline-light ms-3">
+                <i class="bi bi-moon-fill"></i>
+            </button>
         </div>
     </div>
 </nav>
@@ -46,40 +115,90 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        $('#tabelaJogadores').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
-            },
-            "order": [[0, "asc"]],
-            "pageLength": 10
+$(document).ready(function() {
+    const body = document.body;
+    const toggleBtn = document.getElementById('toggle-theme');
+
+    // Função para aplicar/remover dark mode nas tabelas
+    const updateTablesTheme = () => {
+        $('table.dataTable').each(function() {
+            if(body.classList.contains('dark-mode')) {
+                $(this).addClass('dark-mode');
+            } else {
+                $(this).removeClass('dark-mode');
+            }
+            $(this).DataTable().draw(false);
         });
+    };
+
+    // Carregar preferência do localStorage
+    if(localStorage.getItem('theme') === 'light') {
+        body.classList.add('light-mode');
+        body.classList.remove('dark-mode');
+        toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i>';
+    } else {
+        body.classList.add('dark-mode');
+        body.classList.remove('light-mode');
+        toggleBtn.innerHTML = '<i class="bi bi-moon-fill"></i>';
+    }
+
+    // Inicializar DataTables
+    $('#tabelaJogadores').DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
+        },
+        "order": [[0, "asc"]],
+        "pageLength": 10,
+        "createdRow": function(row, data, dataIndex){
+            // Aplica dark-mode se estiver ativo
+            if(body.classList.contains('dark-mode')){
+                $(row).closest('table').addClass('dark-mode');
+            }
+        },
+        "initComplete": function(settings, json){
+            updateTablesTheme();
+        }
     });
+
+    // Alternar tema
+    toggleBtn.addEventListener('click', () => {
+        if(body.classList.contains('dark-mode')) {
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
+            toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i>';
+            localStorage.setItem('theme', 'light');
+        } else {
+            body.classList.remove('light-mode');
+            body.classList.add('dark-mode');
+            toggleBtn.innerHTML = '<i class="bi bi-moon-fill"></i>';
+            localStorage.setItem('theme', 'dark');
+        }
+        updateTablesTheme();
+    });
+});
 </script>
 
 {% if messages %}
-  <div class="container mt-3" id="message-container">
+<div class="container mt-3" id="message-container">
     {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
         {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+    </div>
     {% endfor %}
-  </div>
+</div>
 
-  <script>
-    // Faz desaparecer automaticamente após 3 segundos (3000 ms)
+<script>
     setTimeout(() => {
-      const container = document.getElementById('message-container');
-      if (container) {
-        container.style.transition = 'opacity 0.5s ease';
-        container.style.opacity = '0';
-        setTimeout(() => container.remove(), 500); // remove depois do fade
-      }
+        const container = document.getElementById('message-container');
+        if (container) {
+            container.style.transition = 'opacity 0.5s ease';
+            container.style.opacity = '0';
+            setTimeout(() => container.remove(), 500);
+        }
     }, 3000);
-  </script>
+</script>
 {% endif %}
+
 </body>
 </html>
-
-

@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-uktnlhd^6=ujw9ifeycr9(nsvfp&%5c_h&=u%^^cg6ve*04as%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'CedroChampionsCup']
 
 
 # Application definition
