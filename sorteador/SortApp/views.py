@@ -225,3 +225,10 @@ def excluir_todos_jogadores(request):
         Jogador.objects.all().delete()
         messages.success(request, 'Todos os jogadores foram excluídos com sucesso!')
     return redirect('listar_jogadores')
+
+def listar_times_completos(request):
+    times = Time.objects.prefetch_related('jogadores').all()
+    context = {
+        'times': times,
+    }
+    return render(request, 'times_completos.html', context)

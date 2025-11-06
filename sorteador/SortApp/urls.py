@@ -13,5 +13,6 @@ urlpatterns = [
     path('sortear/salvar/', views.salvar_sorteio, name='salvar_sorteio'),
     path('times/<int:time_id>/', views.detalhes_time, name='detalhes_time'),
     path('jogadores/excluir_todos/', views.excluir_todos_jogadores, name='excluir_todos_jogadores'),
+    path('times_completos/', views.listar_times_completos, name='listar_times_completos'),
 
 ]

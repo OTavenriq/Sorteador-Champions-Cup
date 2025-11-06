@@ -1,16 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2 class="mb-4">Jogadores</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Jogadores</h2>
+    <div>
+        <a href="{% url 'cadastrar_jogador' %}" class="btn btn-success me-2">+ Adicionar Jogador</a>
 
-<div class="d-flex justify-content-between mb-4">
-    <a href="{% url 'cadastrar_jogador' %}" class="btn btn-success">+ Adicionar Jogador</a>
+        <a href="{% url 'listar_times_completos' %}" class="btn btn-primary me-2">
+            Ver Times e Jogadores
+        </a>
 
-    <form method="post" action="{% url 'excluir_todos_jogadores' %}" 
-          onsubmit="return confirm('Tem certeza que deseja excluir TODOS os jogadores?');">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Excluir Todos</button>
-    </form>
+        <form method="post" action="{% url 'excluir_todos_jogadores' %}" 
+              class="d-inline"
+              onsubmit="return confirm('Tem certeza que deseja excluir TODOS os jogadores?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Excluir Todos</button>
+        </form>
+    </div>
 </div>
 
 {% regroup jogadores by classificacao as potes %}
