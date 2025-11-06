@@ -1,46 +1,61 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Jogadores</h2>
-<div class="d-flex justify-content-between mb-3">
+<h2 class="mb-4">Jogadores</h2>
+
+<div class="d-flex justify-content-between mb-4">
     <a href="{% url 'cadastrar_jogador' %}" class="btn btn-success">+ Adicionar Jogador</a>
 
-    <form method="post" action="{% url 'excluir_todos_jogadores' %}" onsubmit="return confirm('Tem certeza que deseja excluir TODOS os jogadores?');">
+    <form method="post" action="{% url 'excluir_todos_jogadores' %}" 
+          onsubmit="return confirm('Tem certeza que deseja excluir TODOS os jogadores?');">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Excluir Todos</button>
     </form>
 </div>
 
-<table id="tabelaJogadores" class="table table-bordered table-hover">
-    <thead class="table-dark">
-        <tr>
-            <th>Nome</th>
-            <th>Classificacao (Pote)</th>
-            <th>Overall</th>
-            <th>Time</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for j in jogadores %}
-        <tr>
-            <td>{{ j.nome }}</td>
-            <td>{{ j.classificacao }}</td>
-            <td>{{ j.overall }}</td>
-            <td>
-                {% if j.time %}
-                    {{ j.time.nome }}
-                {% else %}
-                    —
-                {% endif %}
-            </td>
-            <td class="text-end">
-                <a href="{% url 'editar_jogador' j.id %}" class="text-muted" title="Editar">
-                    <i class="bi bi-pencil-square"></i>
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% regroup jogadores by classificacao as potes %}
+
+{% for pote in potes %}
+<div class="card mb-4 shadow-sm border-0">
+    <div class="card-header bg-primary text-white fw-bold">
+        Pote {{ pote.grouper }}
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome</th>
+                    <th>Overall</th>
+                    <th>Time</th>
+                    <th class="text-end"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for j in pote.list %}
+                <tr>
+                    <td class="fw-semibold">{{ j.nome }}</td>
+                    <td>{{ j.overall }}</td>
+                    <td>
+                        {% if j.time %}
+                            {{ j.time.nome }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'editar_jogador' j.id %}" class="text-muted" title="Editar">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% empty %}
+<div class="alert alert-info text-center">
+    Nenhum jogador cadastrado ainda.
+</div>
+{% endfor %}
 {% endblock %}
