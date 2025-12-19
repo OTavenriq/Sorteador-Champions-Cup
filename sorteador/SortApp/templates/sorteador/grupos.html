@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load extras %}
+
+{% block content %}
+<h2 class="mb-4">Sorteio de Grupos</h2>
+
+{% if erro %}
+<div class="alert alert-danger">{{ erro }}</div>
+{% endif %}
+
+<div class="row">
+    {% for grupo, itens in grupos.items %}
+    <div class="col-md-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header text-center bg-dark text-white">
+                <strong>{{ grupo }}</strong>
+            </div>
+            <div class="card-body">
+                {% for item in itens %}
+                <div class="d-flex align-items-center mb-2">
+                    {% if item.time.escudo %}
+                        <img src="{{ item.time.escudo.url }}" width="40" class="me-2">
+                    {% endif %}
+                    <div>
+                        <strong>{{ item.time.nome }}</strong><br>
+                        <small>Overall: {{ item.overall }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="card-footer text-center">
+                <strong>Overall do grupo: {{ soma_grupos|get_item:grupo }}</strong>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

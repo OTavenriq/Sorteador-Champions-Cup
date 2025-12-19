@@ -220,3 +220,68 @@ def listar_times_completos(request):
         'times_com_overall': times_com_overall,
     }
     return render(request, 'times_completos.html', context)
+
+def sortear_grupos(request):
+    times = list(Time.objects.prefetch_related('jogadores').all())
+
+    if not times:
+        return render(request, 'sorteador/grupos.html', {
+            'erro': 'Cadastre os times antes de sortear os grupos.'
+        })
+
+    NUM_GRUPOS = 2
+
+    if len(times) < NUM_GRUPOS:
+        return render(request, 'sorteador/grupos.html', {
+            'erro': 'Quantidade de times insuficiente para formar os grupos.'
+        })
+
+    # calcula overall total de cada time
+    times_com_overall = []
+    for time in times:
+        overall = sum(j.overall for j in time.jogadores.all())
+        times_com_overall.append({
+            'time': time,
+            'overall': overall
+        })
+
+    # ordena do maior para o menor
+    times_com_overall.sort(key=lambda x: x['overall'], reverse=True)
+
+    # cria os grupos
+    grupos = {f'Grupo {chr(65+i)}': [] for i in range(NUM_GRUPOS)}
+    soma_grupos = {grupo: 0 for grupo in grupos.keys()}
+
+    nomes_grupos = list(grupos.keys())
+    indice = 0
+    direcao = 1
+
+    for item in times_com_overall:
+        grupo_atual = nomes_grupos[indice]
+
+        grupos[grupo_atual].append(item)
+        soma_grupos[grupo_atual] += item['overall']
+
+        # zig-zag
+        if direcao == 1:
+            if indice == NUM_GRUPOS - 1:
+                direcao = -1
+            else:
+                indice += 1
+        else:
+            if indice == 0:
+                direcao = 1
+            else:
+                indice -= 1
+
+    # salva na sessão (opcional, mas útil)
+    request.session['grupos_sorteados'] = {
+        grupo: [item['time'].id for item in itens]
+        for grupo, itens in grupos.items()
+    }
+
+    # 🔴 ESTE RETURN É O MAIS IMPORTANTE
+    return render(request, 'sorteador/grupos.html', {
+        'grupos': grupos,
+        'soma_grupos': soma_grupos
+    })

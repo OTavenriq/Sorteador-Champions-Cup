@@ -22,6 +22,7 @@
                 </div>
             </a>
         </div>
+
         <div class="col-md-5">
             <a href="{% url 'listar_times' %}" style="text-decoration: none; color: inherit;">
                 <div class="card shadow-sm hover-expand border-0 text-center p-4" style="background-color: #1b263b;">
@@ -32,11 +33,17 @@
         </div>
     </div>
 
-    <!-- Botão sortear times -->
-    <div class="text-center mt-4">
+    <!-- Ações do campeonato -->
+    <div class="text-center mt-4 d-flex justify-content-center gap-3 flex-wrap">
+
         <a href="{% url 'sortear_times' %}" class="btn btn-secondary btn-lg">
             <i class="bi bi-shuffle me-2"></i> Sortear Times
         </a>
+
+        <a href="{% url 'sortear_grupos' %}" class="btn btn-warning btn-lg">
+            <i class="bi bi-diagram-3-fill me-2"></i> Sortear Grupos
+        </a>
+
     </div>
 
     <!-- Sobre o torneio -->
@@ -71,7 +78,7 @@ body {
     background-color: #2b3548;
 }
 
-/* Botões */
+/* Botão sortear times */
 .btn-secondary {
     background-color: #6c757d;
     border-color: #6c757d;
@@ -81,6 +88,19 @@ body {
     background-color: #5a6268;
     border-color: #545b62;
     color: #ffffff;
+}
+
+/* Botão sortear grupos */
+.btn-warning {
+    background-color: #f0b429;
+    border-color: #f0b429;
+    color: #1b263b;
+    font-weight: 600;
+}
+.btn-warning:hover {
+    background-color: #d9a21f;
+    border-color: #d9a21f;
+    color: #0d1b2a;
 }
 
 /* Ícones */
