@@ -221,6 +221,9 @@ def listar_times_completos(request):
     }
     return render(request, 'times_completos.html', context)
 
+import random
+from collections import defaultdict
+
 def sortear_grupos(request):
     times = list(Time.objects.prefetch_related('jogadores').all())
 
@@ -230,58 +233,86 @@ def sortear_grupos(request):
         })
 
     NUM_GRUPOS = 2
+    MAX_TENTATIVAS = 100
+    MARGEM_MAXIMA = 5  # margem da MEDIA de overall
 
     if len(times) < NUM_GRUPOS:
         return render(request, 'sorteador/grupos.html', {
             'erro': 'Quantidade de times insuficiente para formar os grupos.'
         })
 
-    # calcula overall total de cada time
-    times_com_overall = []
+    # 🔹 calcula media de overall de cada time
+    times_info = []
     for time in times:
-        overall = sum(j.overall for j in time.jogadores.all())
-        times_com_overall.append({
+        jogadores = time.jogadores.all()
+        if jogadores.exists():
+            media = sum(j.overall for j in jogadores) / jogadores.count()
+        else:
+            media = 0
+
+        times_info.append({
             'time': time,
-            'overall': overall
+            'media': round(media, 1)
         })
 
-    # ordena do maior para o menor
-    times_com_overall.sort(key=lambda x: x['overall'], reverse=True)
+    for tentativa in range(MAX_TENTATIVAS):
+        grupos = {
+            f'Grupo {chr(65+i)}': {
+                'times': [],
+                'soma_media': 0
+            }
+            for i in range(NUM_GRUPOS)
+        }
 
-    # cria os grupos
-    grupos = {f'Grupo {chr(65+i)}': [] for i in range(NUM_GRUPOS)}
-    soma_grupos = {grupo: 0 for grupo in grupos.keys()}
+        sucesso = True
+        times_disp = times_info[:]
+        random.shuffle(times_disp)
 
-    nomes_grupos = list(grupos.keys())
-    indice = 0
-    direcao = 1
+        for info_time in times_disp:
+            pesos = []
+            candidatos = []
 
-    for item in times_com_overall:
-        grupo_atual = nomes_grupos[indice]
+            MAX_POR_GRUPO = len(times) // NUM_GRUPOS
 
-        grupos[grupo_atual].append(item)
-        soma_grupos[grupo_atual] += item['overall']
+            for grupo, dados in grupos.items():
+                if len(dados['times']) < MAX_POR_GRUPO:
+                    peso = 1 / (dados['soma_media'] + 1)
+                    candidatos.append(grupo)
+                    pesos.append(peso)
 
-        # zig-zag
-        if direcao == 1:
-            if indice == NUM_GRUPOS - 1:
-                direcao = -1
-            else:
-                indice += 1
-        else:
-            if indice == 0:
-                direcao = 1
-            else:
-                indice -= 1
+            if not candidatos:
+                sucesso = False
+                break
 
-    # salva na sessão (opcional, mas útil)
+            grupo_escolhido = random.choices(candidatos, weights=pesos, k=1)[0]
+            grupos[grupo_escolhido]['times'].append(info_time)
+            grupos[grupo_escolhido]['soma_media'] += info_time['media']
+
+        if not sucesso:
+            continue
+
+        medias = [
+            dados['soma_media'] / len(dados['times'])
+            for dados in grupos.values()
+            if dados['times']
+        ]
+
+        margem = max(medias) - min(medias)
+
+        if margem <= MARGEM_MAXIMA:
+            break
+    else:
+        return render(request, 'sorteador/grupos.html', {
+            'erro': f'Não foi possível gerar grupos equilibrados após {MAX_TENTATIVAS} tentativas.'
+        })
+
+    # 🔹 salva na sessão
     request.session['grupos_sorteados'] = {
-        grupo: [item['time'].id for item in itens]
-        for grupo, itens in grupos.items()
+        grupo: [t['time'].id for t in dados['times']]
+        for grupo, dados in grupos.items()
     }
 
-    # 🔴 ESTE RETURN É O MAIS IMPORTANTE
     return render(request, 'sorteador/grupos.html', {
         'grupos': grupos,
-        'soma_grupos': soma_grupos
+        'margem': round(margem, 2)
     })

@@ -2,37 +2,51 @@
 {% load extras %}
 
 {% block content %}
-<h2 class="mb-4">Sorteio de Grupos</h2>
+<h2 class="mb-4 text-center">Sorteio de Grupos</h2>
 
 {% if erro %}
-<div class="alert alert-danger">{{ erro }}</div>
+<div class="alert alert-danger text-center">{{ erro }}</div>
 {% endif %}
 
 <div class="row">
-    {% for grupo, itens in grupos.items %}
+    {% for grupo, dados in grupos.items %}
     <div class="col-md-6 mb-4">
-        <div class="card shadow">
+        <div class="card shadow border-0">
             <div class="card-header text-center bg-dark text-white">
                 <strong>{{ grupo }}</strong>
             </div>
+
             <div class="card-body">
-                {% for item in itens %}
-                <div class="d-flex align-items-center mb-2">
+                {% for item in dados.times %}
+                <div class="d-flex align-items-center mb-3">
                     {% if item.time.escudo %}
                         <img src="{{ item.time.escudo.url }}" width="40" class="me-2">
                     {% endif %}
                     <div>
                         <strong>{{ item.time.nome }}</strong><br>
-                        <small>Overall: {{ item.overall }}</small>
+                        <small>Média do time: {{ item.media }}</small>
                     </div>
                 </div>
+                {% empty %}
+                <p class="text-muted text-center mb-0">
+                    Nenhum time no grupo.
+                </p>
                 {% endfor %}
             </div>
-            <div class="card-footer text-center">
-                <strong>Overall do grupo: {{ soma_grupos|get_item:grupo }}</strong>
+
+            <div class="card-footer text-center bg-secondary text-white">
+                Média do grupo:
+                {{ dados.soma_media|floatformat:1 }}
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+
+{% if margem %}
+<div class="alert alert-info text-center mt-3">
+    Diferença média entre os grupos: <strong>{{ margem }}</strong>
+</div>
+{% endif %}
+
 {% endblock %}
