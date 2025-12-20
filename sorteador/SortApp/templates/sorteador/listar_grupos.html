@@ -11,15 +11,15 @@
     {% endif %}
 
     <div class="row">
-        {% for grupo, times in grupos.items %}
+        {% for grupo, dados in grupos.items %}
         <div class="col-md-6 mb-4">
-            <div class="card shadow border-0">
+            <div class="card shadow border-0 h-100">
                 <div class="card-header bg-dark text-white text-center">
                     <strong>{{ grupo }}</strong>
                 </div>
 
                 <div class="card-body">
-                    {% for item in times %}
+                    {% for item in dados.times %}
                     <div class="d-flex align-items-center mb-3">
                         {% if item.time.escudo %}
                             <img src="{{ item.time.escudo.url }}" width="40" class="me-2">
@@ -30,6 +30,11 @@
                         </div>
                     </div>
                     {% endfor %}
+                </div>
+
+                <div class="card-footer text-center bg-secondary text-white">
+                    Overall médio do grupo:
+                    <strong>{{ dados.media_grupo }}</strong>
                 </div>
             </div>
         </div>

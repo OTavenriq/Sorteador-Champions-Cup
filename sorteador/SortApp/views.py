@@ -343,25 +343,38 @@ def salvar_grupos(request):
 
     return redirect('listar_grupos')
 
+from collections import defaultdict
+
 def listar_grupos(request):
     times = Time.objects.prefetch_related('jogadores').all()
 
-    grupos = defaultdict(list)
+    grupos = defaultdict(lambda: {
+        'times': [],
+        'soma_medias': 0
+    })
 
     for time in times:
         if time.grupo:
             jogadores = time.jogadores.all()
             if jogadores.exists():
-                media = round(
+                media_time = round(
                     sum(j.overall for j in jogadores) / jogadores.count(), 1
                 )
             else:
-                media = 0
+                media_time = 0
 
-            grupos[time.grupo].append({
+            grupos[time.grupo]['times'].append({
                 'time': time,
-                'media': media
+                'media': media_time
             })
+            grupos[time.grupo]['soma_medias'] += media_time
+
+    # 🔹 calcula média final de cada grupo
+    for grupo, dados in grupos.items():
+        total_times = len(dados['times'])
+        dados['media_grupo'] = round(
+            dados['soma_medias'] / total_times, 1
+        ) if total_times else 0
 
     return render(request, 'sorteador/listar_grupos.html', {
         'grupos': dict(grupos)
