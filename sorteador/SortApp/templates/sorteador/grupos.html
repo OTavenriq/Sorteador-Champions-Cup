@@ -49,4 +49,22 @@
 </div>
 {% endif %}
 
+<div class="container mt-4">
+    <div class="d-flex justify-content-between">
+        <form method="POST" action="{% url 'sortear_grupos' %}">
+            {% csrf_token %}
+            <button class="btn btn-dark">
+                🔁 Refazer Sorteio
+            </button>
+        </form>
+
+        <form method="POST" action="{% url 'salvar_grupos' %}">
+            {% csrf_token %}
+            <button class="btn btn-success">
+                💾 Salvar Grupos
+            </button>
+        </form>
+    </div>
+</div>
+
 {% endblock %}

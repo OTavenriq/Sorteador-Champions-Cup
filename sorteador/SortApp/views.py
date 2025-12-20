@@ -316,3 +316,29 @@ def sortear_grupos(request):
         'grupos': grupos,
         'margem': round(margem, 2)
     })
+
+@csrf_exempt
+def salvar_grupos(request):
+    if request.method == 'POST':
+        grupos_sorteados = request.session.get('grupos_sorteados')
+
+        if not grupos_sorteados:
+            messages.error(request, 'Nenhum sorteio de grupos ativo para salvar.')
+            return redirect('sortear_grupos')
+
+        # 🔹 limpa grupos anteriores
+        Time.objects.update(grupo=None)
+
+        # 🔹 aplica os grupos salvos na sessão
+        for grupo, times_ids in grupos_sorteados.items():
+            for time_id in times_ids:
+                time = Time.objects.get(id=time_id)
+                time.grupo = grupo
+                time.save()
+
+        # 🔹 limpa a sessão
+        del request.session['grupos_sorteados']
+
+        messages.success(request, 'Sorteio dos grupos salvo com sucesso!')
+
+    return redirect('listar_times')

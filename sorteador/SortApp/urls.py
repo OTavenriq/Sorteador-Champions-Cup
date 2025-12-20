@@ -15,5 +15,6 @@ urlpatterns = [
     path('jogadores/excluir_todos/', views.excluir_todos_jogadores, name='excluir_todos_jogadores'),
     path('times_completos/', views.listar_times_completos, name='listar_times_completos'),
     path('sortear-grupos/', views.sortear_grupos, name='sortear_grupos'),
+    path('salvar-grupos/', views.salvar_grupos, name='salvar_grupos'),
 
 ]
