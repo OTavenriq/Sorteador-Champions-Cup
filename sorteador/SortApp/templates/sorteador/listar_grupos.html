@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Grupos do Campeonato</h2>
+
+    {% if not grupos %}
+        <div class="alert alert-warning text-center">
+            Nenhum grupo foi sorteado ainda.
+        </div>
+    {% endif %}
+
+    <div class="row">
+        {% for grupo, times in grupos.items %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow border-0">
+                <div class="card-header bg-dark text-white text-center">
+                    <strong>{{ grupo }}</strong>
+                </div>
+
+                <div class="card-body">
+                    {% for item in times %}
+                    <div class="d-flex align-items-center mb-3">
+                        {% if item.time.escudo %}
+                            <img src="{{ item.time.escudo.url }}" width="40" class="me-2">
+                        {% endif %}
+                        <div>
+                            <strong>{{ item.time.nome }}</strong><br>
+                            <small>Média do time: {{ item.media }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

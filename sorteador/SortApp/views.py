@@ -341,4 +341,28 @@ def salvar_grupos(request):
 
         messages.success(request, 'Sorteio dos grupos salvo com sucesso!')
 
-    return redirect('listar_times')
+    return redirect('listar_grupos')
+
+def listar_grupos(request):
+    times = Time.objects.prefetch_related('jogadores').all()
+
+    grupos = defaultdict(list)
+
+    for time in times:
+        if time.grupo:
+            jogadores = time.jogadores.all()
+            if jogadores.exists():
+                media = round(
+                    sum(j.overall for j in jogadores) / jogadores.count(), 1
+                )
+            else:
+                media = 0
+
+            grupos[time.grupo].append({
+                'time': time,
+                'media': media
+            })
+
+    return render(request, 'sorteador/listar_grupos.html', {
+        'grupos': dict(grupos)
+    })
