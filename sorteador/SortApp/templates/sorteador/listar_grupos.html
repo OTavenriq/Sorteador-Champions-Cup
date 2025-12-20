@@ -1,44 +1,149 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Grupos do Campeonato</h2>
+<div class="container-fluid py-5 champions-bg">
+
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-light champions-title">
+            Grupos do Campeonato
+        </h1>
+        <p class="text-secondary">Cedro Champions Cup</p>
+    </div>
 
     {% if not grupos %}
-        <div class="alert alert-warning text-center">
+        <div class="alert alert-warning text-center col-lg-6 mx-auto">
             Nenhum grupo foi sorteado ainda.
         </div>
     {% endif %}
 
-    <div class="row">
+    <div class="row justify-content-center">
         {% for grupo, dados in grupos.items %}
-        <div class="col-md-6 mb-4">
-            <div class="card shadow border-0 h-100">
-                <div class="card-header bg-dark text-white text-center">
-                    <strong>{{ grupo }}</strong>
-                </div>
+            <div class="col-lg-5 col-md-6 mb-4">
 
-                <div class="card-body">
-                    {% for item in dados.times %}
-                    <div class="d-flex align-items-center mb-3">
-                        {% if item.time.escudo %}
-                            <img src="{{ item.time.escudo.url }}" width="40" class="me-2">
-                        {% endif %}
-                        <div>
-                            <strong>{{ item.time.nome }}</strong><br>
-                            <small>Média do time: {{ item.media }}</small>
-                        </div>
+                <div class="group-card h-100">
+                    
+                    <!-- Cabeçalho do grupo -->
+                    <div class="group-header">
+                        {{ grupo }}
                     </div>
-                    {% endfor %}
+
+                    <!-- Times do grupo -->
+                    <div class="group-body">
+                        {% for item in dados.times %}
+                            <div class="team-row d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    {% if item.time.escudo %}
+                                        <img src="{{ item.time.escudo.url }}" class="team-logo">
+                                    {% endif %}
+                                    <strong class="team-name">
+                                        {{ item.time.nome }}
+                                    </strong>
+                                </div>
+
+                                <span class="team-media">
+                                    {{ item.media }}
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Rodapé -->
+                    <div class="group-footer text-center">
+                        Overall médio do grupo:
+                        <strong>{{ dados.media_grupo }}</strong>
+                    </div>
+
                 </div>
 
-                <div class="card-footer text-center bg-secondary text-white">
-                    Overall médio do grupo:
-                    <strong>{{ dados.media_grupo }}</strong>
-                </div>
             </div>
-        </div>
         {% endfor %}
     </div>
+
 </div>
+
+<style>
+/* FUNDO CHAMPIONS */
+.champions-bg {
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1b3a6f, #0a1428 70%);
+}
+
+/* TÍTULO */
+.champions-title {
+    font-size: 2.8rem;
+    border-bottom: 3px solid #1e90ff;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+/* CARD DO GRUPO */
+.group-card {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.group-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px rgba(30,144,255,0.4);
+}
+
+/* CABEÇALHO DO GRUPO */
+.group-header {
+    background: linear-gradient(to right, #1e90ff, #0a58ca);
+    color: #ffffff;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+    padding: 12px;
+    letter-spacing: 2px;
+}
+
+/* CORPO */
+.group-body {
+    padding: 20px;
+}
+
+/* LINHA DO TIME */
+.team-row {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.team-row:last-child {
+    border-bottom: none;
+}
+
+/* ESCUDO */
+.team-logo {
+    width: 45px;
+    height: auto;
+}
+
+/* NOME */
+.team-name {
+    color: #ffffff;
+    font-size: 1.1rem;
+}
+
+/* MÉDIA DO TIME */
+.team-media {
+    background: rgba(30,144,255,0.15);
+    color: #1e90ff;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+/* RODAPÉ */
+.group-footer {
+    background: rgba(255,255,255,0.08);
+    color: #ffffff;
+    padding: 12px;
+    font-size: 1rem;
+}
+</style>
 {% endblock %}

@@ -4,8 +4,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect, get_object_or_404
 from collections import defaultdict
 from django.contrib import messages
-from .models import Jogador, Time
+from .models import Jogador, Time, Jogo
 from .forms import JogadorForm, TimeForm
+from itertools import product
+import math
 
 
 def dashboard(request):
@@ -329,21 +331,58 @@ def salvar_grupos(request):
         # 🔹 limpa grupos anteriores
         Time.objects.update(grupo=None)
 
-        # 🔹 aplica os grupos salvos na sessão
+        # 🔹 aplica os grupos
         for grupo, times_ids in grupos_sorteados.items():
             for time_id in times_ids:
                 time = Time.objects.get(id=time_id)
                 time.grupo = grupo
                 time.save()
 
-        # 🔹 limpa a sessão
+        # 🔹 limpa jogos antigos
+        Jogo.objects.all().delete()
+
+        # 🔹 busca times já salvos
+        grupo_a = list(Time.objects.filter(grupo='Grupo A').order_by('id'))
+        grupo_b = list(Time.objects.filter(grupo='Grupo B').order_by('id'))
+
+        if len(grupo_a) != 3 or len(grupo_b) != 3:
+            messages.error(request, 'Os grupos precisam ter exatamente 3 times.')
+            return redirect('listar_grupos')
+
+        A1, A2, A3 = grupo_a
+        B1, B2, B3 = grupo_b
+
+        jogos = [
+            # Rodada 1
+            (A1, B1),
+            (A2, B2),
+            (A3, B3),
+
+            # Rodada 2
+            (A1, B3),
+            (A2, B1),
+            (A3, B2),
+
+            # Rodada 3
+            (A2, B3),
+            (A1, B2),
+            (A3, B1),
+        ]
+
+        # 🔹 salva os jogos respeitando a ordem
+        for ordem, (time_a, time_b) in enumerate(jogos, start=1):
+            Jogo.objects.create(
+                time_a=time_a,
+                time_b=time_b,
+                ordem=ordem
+            )
+
+        # 🔹 limpa sessão
         del request.session['grupos_sorteados']
 
-        messages.success(request, 'Sorteio dos grupos salvo com sucesso!')
+        messages.success(request, 'Grupos e jogos salvos com sucesso!')
 
     return redirect('listar_grupos')
-
-from collections import defaultdict
 
 def listar_grupos(request):
     times = Time.objects.prefetch_related('jogadores').all()
@@ -378,4 +417,22 @@ def listar_grupos(request):
 
     return render(request, 'sorteador/listar_grupos.html', {
         'grupos': dict(grupos)
+    })
+
+def listar_jogos(request):
+    jogos = list(
+        Jogo.objects
+        .select_related('time_a', 'time_b')
+        .order_by('ordem')
+    )
+
+    JOGOS_POR_RODADA = 3
+    jogos_por_rodada = defaultdict(list)
+
+    for index, jogo in enumerate(jogos):
+        rodada = math.ceil((index + 1) / JOGOS_POR_RODADA)
+        jogos_por_rodada[rodada].append(jogo)
+
+    return render(request, 'sorteador/listar_jogos.html', {
+        'jogos_por_rodada': dict(jogos_por_rodada)
     })

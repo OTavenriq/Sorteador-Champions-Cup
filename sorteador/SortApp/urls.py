@@ -17,5 +17,6 @@ urlpatterns = [
     path('sortear-grupos/', views.sortear_grupos, name='sortear_grupos'),
     path('salvar-grupos/', views.salvar_grupos, name='salvar_grupos'),
     path('grupos/', views.listar_grupos, name='listar_grupos'),
+    path('jogos/', views.listar_jogos, name='listar_jogos'),
 
 ]
