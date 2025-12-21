@@ -31,20 +31,26 @@
                     <!-- Times do grupo -->
                     <div class="group-body">
                         {% for item in dados.times %}
-                            <div class="team-row d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center gap-3">
-                                    {% if item.time.escudo %}
-                                        <img src="{{ item.time.escudo.url }}" class="team-logo">
-                                    {% endif %}
-                                    <strong class="team-name">
-                                        {{ item.time.nome }}
-                                    </strong>
-                                </div>
+                            <a href="{% url 'detalhes_time' item.time.id %}"
+                               class="team-link">
 
-                                <span class="team-media">
-                                    {{ item.media }}
-                                </span>
-                            </div>
+                                <div class="team-row d-flex align-items-center justify-content-between">
+
+                                    <div class="d-flex align-items-center gap-3">
+                                        {% if item.time.escudo %}
+                                            <img src="{{ item.time.escudo.url }}" class="team-logo">
+                                        {% endif %}
+                                        <strong class="team-name">
+                                            {{ item.time.nome }}
+                                        </strong>
+                                    </div>
+
+                                    <span class="team-media">
+                                        {{ item.media }}
+                                    </span>
+
+                                </div>
+                            </a>
                         {% endfor %}
                     </div>
 
@@ -91,7 +97,7 @@
     box-shadow: 0 12px 40px rgba(30,144,255,0.4);
 }
 
-/* CABEÇALHO DO GRUPO */
+/* CABEÇALHO */
 .group-header {
     background: linear-gradient(to right, #1e90ff, #0a58ca);
     color: #ffffff;
@@ -107,14 +113,26 @@
     padding: 20px;
 }
 
-/* LINHA DO TIME */
-.team-row {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+/* LINK DO TIME */
+.team-link {
+    text-decoration: none;
+    display: block;
 }
 
-.team-row:last-child {
-    border-bottom: none;
+/* LINHA DO TIME */
+.team-row {
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    border: 1px solid transparent;
+    transition: all 0.25s ease;
+}
+
+.team-row:hover {
+    background: rgba(30,144,255,0.12);
+    border-color: rgba(30,144,255,0.6);
+    transform: translateX(6px);
+    cursor: pointer;
 }
 
 /* ESCUDO */
@@ -129,7 +147,7 @@
     font-size: 1.1rem;
 }
 
-/* MÉDIA DO TIME */
+/* MÉDIA */
 .team-media {
     background: rgba(30,144,255,0.15);
     color: #1e90ff;
@@ -146,4 +164,5 @@
     font-size: 1rem;
 }
 </style>
+
 {% endblock %}
