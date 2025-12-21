@@ -1,59 +1,161 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Resultado do Sorteio</h2>
+<div class="container-fluid py-5 champions-bg">
+
+    <!-- Título -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-light champions-title">
+            Resultado do Sorteio
+        </h1>
+        <p class="text-secondary">Cedro Champions Cup</p>
+    </div>
+
     {% if aviso %}
-        <div class="alert alert-warning text-center">{{ aviso }}</div>
+        <div class="alert alert-warning text-center">
+            {{ aviso }}
+        </div>
     {% endif %}
 
     {% if erro %}
-        <div class="alert alert-danger text-center">{{ erro }}</div>
+        <div class="alert alert-danger text-center">
+            {{ erro }}
+        </div>
     {% else %}
-        <div class="row">
+
+        <!-- Times sorteados -->
+        <div class="row justify-content-center">
             {% for s in sorteio.values %}
-                <div class="col-md-4 mb-4">
-                    <div class="card bg-dark text-white h-100">
-                        <div class="card-header text-center fw-bold">{{ s.time.nome }}</div>
-                        <div class="card-body">
-                            {% if s.time.escudo %}
-                                <img src="{{ s.time.escudo.url }}" class="img-fluid d-block mx-auto mb-3" style="max-height: 80px;">
-                            {% endif %}
-                            <ul class="list-group list-group-flush">
-                                {% for j in s.jogadores %}
-                                    <li class="list-group-item bg-dark text-white d-flex justify-content-between">
-                                        {{ j.nome }}
-                                        <span class="text-info">
-                                            {% if j.classificacao == 1 %}
-                                                G
-                                            {% else %}
-                                                {{ j.classificacao }}
-                                            {% endif %}
-                                        </span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="card-footer text-center">
-                            Total: <strong>{{ s.overall }}</strong>
-                        </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <div class="champions-card h-100">
+
+                    <!-- Header -->
+                    <div class="champions-card-header">
+                        {{ s.time.nome }}
                     </div>
+
+                    <!-- Corpo -->
+                    <div class="p-4 text-center">
+
+                        {% if s.time.escudo %}
+                            <img src="{{ s.time.escudo.url }}"
+                                 class="team-logo mb-3">
+                        {% endif %}
+
+                        <ul class="list-group list-group-flush text-start">
+                            {% for j in s.jogadores %}
+                                <li class="list-group-item bg-transparent text-light d-flex justify-content-between border-bottom border-secondary">
+                                    <span>{{ j.nome }}</span>
+                                    <span class="player-class">
+                                        {% if j.classificacao == 1 %}
+                                            G
+                                        {% else %}
+                                            {{ j.classificacao }}
+                                        {% endif %}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="group-footer text-center">
+                        Total do time:
+                        <strong>{{ s.overall }}</strong>
+                    </div>
+
                 </div>
+
+            </div>
             {% endfor %}
         </div>
+
     {% endif %}
+
+    <!-- Ações -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-8 text-center d-flex justify-content-center gap-3 flex-wrap">
+
+            <form method="POST" action="{% url 'refazer_sorteio' %}">
+                {% csrf_token %}
+                <button class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-shuffle me-2"></i> Refazer Sorteio
+                </button>
+            </form>
+
+            <form method="POST" action="{% url 'salvar_sorteio' %}">
+                {% csrf_token %}
+                <button class="btn btn-success btn-lg px-4 fw-bold">
+                    <i class="bi bi-save me-2"></i> Salvar Sorteio
+                </button>
+            </form>
+
+        </div>
+    </div>
+
 </div>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between">
-        <form method="POST" action="{% url 'refazer_sorteio' %}">
-            {% csrf_token %}
-            <button class="bg-dark text-white font-bold py-2 px-4 rounded border border-light hover:bg-secondary">🔁 Refazer Sorteio</button>
-        </form>
-        <form method="POST" action="{% url 'salvar_sorteio' %}">
-            {% csrf_token %}
-            <button class="bg-success text-white font-bold py-2 px-4 rounded hover:bg-success-dark">💾 Salvar Sorteio</button>
-        </form>
-    </div>
-</div>
+<style>
+/* FUNDO CHAMPIONS */
+.champions-bg {
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1b3a6f, #0a1428 70%);
+}
+
+/* TÍTULO */
+.champions-title {
+    font-size: 2.8rem;
+    border-bottom: 3px solid #1e90ff;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+/* CARD PADRÃO */
+.champions-card {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.champions-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 36px rgba(30,144,255,0.35);
+}
+
+/* HEADER */
+.champions-card-header {
+    background: linear-gradient(to right, #1e90ff, #0a58ca);
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 2px;
+    padding: 14px;
+    font-size: 1.2rem;
+}
+
+/* ESCUDO */
+.team-logo {
+    width: 70px;
+    height: auto;
+}
+
+/* CLASSE DO JOGADOR */
+.player-class {
+    color: #1e90ff;
+    font-weight: bold;
+}
+
+/* FOOTER */
+.group-footer {
+    background: rgba(0,0,0,0.35);
+    padding: 12px;
+    color: #ffffff;
+    font-size: 0.95rem;
+}
+</style>
+
 {% endblock %}

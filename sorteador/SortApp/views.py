@@ -20,8 +20,14 @@ def dashboard(request):
 
 
 def listar_jogadores(request):
-    jogadores = Jogador.objects.all().order_by('classificacao', '-overall')
-    return render(request, 'listar_jogadores.html', {'jogadores': jogadores})
+    jogadores = (
+        Jogador.objects
+        .select_related('time')
+        .order_by('classificacao', 'nome')  # classificacao PRIMEIRO
+    )
+    return render(request, 'listar_jogadores.html', {
+        'jogadores': jogadores
+    })
 
 
 def listar_times(request):
@@ -359,8 +365,8 @@ def salvar_grupos(request):
             (A3, B3),
 
             # Rodada 2
-            (A1, B3),
             (A2, B1),
+            (A1, B3),
             (A3, B2),
 
             # Rodada 3

@@ -2,110 +2,176 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container-fluid py-5 champions-bg">
 
     <!-- Cabeçalho -->
     <div class="text-center mb-5">
-        <img src="{% static 'logoCCC.png' %}" alt="Logo Cedro Champions Cup" style="max-width: 120px;">
-        <h1 class="text-light fw-bold mt-3" style="font-size: 2.5rem; border-bottom: 3px solid #f1f1f1; display: inline-block; padding-bottom: 8px;">
+        <img src="{% static 'logoCCC.png' %}"
+             alt="Logo Cedro Champions Cup"
+             class="dashboard-logo mb-3">
+
+        <h1 class="fw-bold text-light champions-title">
             Cedro Champions Cup
         </h1>
+
+        <p class="text-secondary fs-5 mt-2">
+            Painel de Controle do Campeonato
+        </p>
     </div>
 
-    <!-- Cards principais -->
-    <div class="row g-4 justify-content-center">
-        <div class="col-md-5">
-            <a href="{% url 'listar_jogadores' %}" style="text-decoration: none; color: inherit;">
-                <div class="card shadow-sm hover-expand border-0 text-center p-4" style="background-color: #1b263b;">
-                    <i class="bi bi-person-lines-fill text-secondary" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3 text-light">Visualizar Jogadores</h5>
-                </div>
-            </a>
-        </div>
+    <!-- Ações principais -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
 
-        <div class="col-md-5">
-            <a href="{% url 'listar_times' %}" style="text-decoration: none; color: inherit;">
-                <div class="card shadow-sm hover-expand border-0 text-center p-4" style="background-color: #1b263b;">
-                    <i class="bi bi-people-fill text-secondary" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3 text-light">Visualizar Times</h5>
+                <div class="col">
+                    <a href="{% url 'listar_jogadores' %}" class="text-decoration-none">
+                        <div class="champions-card text-center p-4 h-100">
+                            <i class="bi bi-person-lines-fill dashboard-icon"></i>
+                            <h5 class="mt-3 text-light fw-bold">Jogadores</h5>
+                            <p class="text-secondary small mb-0">
+                                Gerenciar e visualizar jogadores
+                            </p>
+                        </div>
+                    </a>
                 </div>
-            </a>
+
+                <div class="col">
+                    <a href="{% url 'listar_times' %}" class="text-decoration-none">
+                        <div class="champions-card text-center p-4 h-100">
+                            <i class="bi bi-shield-fill dashboard-icon"></i>
+                            <h5 class="mt-3 text-light fw-bold">Times</h5>
+                            <p class="text-secondary small mb-0">
+                                Elencos e escudos
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="{% url 'listar_grupos' %}" class="text-decoration-none">
+                        <div class="champions-card text-center p-4 h-100">
+                            <i class="bi bi-diagram-3-fill dashboard-icon"></i>
+                            <h5 class="mt-3 text-light fw-bold">Grupos</h5>
+                            <p class="text-secondary small mb-0">
+                                Visualizar grupos do torneio
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="{% url 'listar_jogos' %}" class="text-decoration-none">
+                        <div class="champions-card text-center p-4 h-100">
+                            <i class="bi bi-calendar-event-fill dashboard-icon"></i>
+                            <h5 class="mt-3 text-light fw-bold">Jogos</h5>
+                            <p class="text-secondary small mb-0">
+                                Tabela e confrontos
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
         </div>
     </div>
 
-    <!-- Ações do campeonato -->
-   <div class="text-center mt-4 d-flex justify-content-center gap-3 flex-wrap">
+    <!-- Ações rápidas -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10 text-center d-flex flex-wrap justify-content-center gap-3">
 
-        <a href="{% url 'sortear_times' %}" class="btn btn-secondary btn-lg">
-            <i class="bi bi-shuffle me-2"></i> Sortear Times
-        </a>
+            <a href="{% url 'sortear_times' %}" class="btn btn-primary btn-lg px-4">
+                <i class="bi bi-shuffle me-2"></i> Sortear Times
+            </a>
 
-        <a href="{% url 'sortear_grupos' %}" class="btn btn-warning btn-lg">
-            <i class="bi bi-diagram-3-fill me-2"></i> Sortear Grupos
-        </a>
+            <a href="{% url 'sortear_grupos' %}" class="btn btn-warning btn-lg px-4 fw-bold">
+                <i class="bi bi-diagram-3-fill me-2"></i> Sortear Grupos
+            </a>
 
+        </div>
     </div>
 
     <!-- Sobre o torneio -->
-    <div class="card shadow-sm border-0 mt-5" style="background-color: #1b263b;">
-        <div class="card-header bg-secondary text-light fw-bold text-center">
-            Sobre o Torneio
-        </div>
-        <div class="card-body text-center text-light">
-            <p class="mb-0">
-                A <strong>Cedro Champions Cup</strong> é um torneio de futsal entre amigos que valoriza a emoção do esporte,
-                promovendo equilíbrio entre os times através de sorteios justos com base na classificação e nível dos jogadores.
-                Um sistema transparente para garantir a isonomia do campeonato.
-            </p>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="champions-card">
+
+                <div class="champions-card-header">
+                    Sobre o Torneio
+                </div>
+
+                <div class="p-4 text-center text-light">
+                    <p class="mb-0 fs-6">
+                        A <strong>Cedro Champions Cup</strong> é um torneio de futsal entre amigos,
+                        estruturado para garantir equilíbrio competitivo entre os times,
+                        utilizando sorteios inteligentes baseados na classificação e nível dos jogadores.
+                        Transparência, diversão e rivalidade saudável definem o campeonato.
+                    </p>
+                </div>
+
+            </div>
+
         </div>
     </div>
 
 </div>
 
 <style>
-body {
-    background: linear-gradient(to bottom, #0d1b2a, #1b263b);
-    color: #f1f1f1;
+/* FUNDO CHAMPIONS */
+.champions-bg {
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1b3a6f, #0a1428 70%);
 }
 
-/* Efeito hover nos cards */
-.hover-expand {
-    transition: all 0.3s ease-in-out;
-}
-.hover-expand:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 8px 20px rgba(255, 255, 255, 0.15);
-    background-color: #2b3548;
+/* LOGO */
+.dashboard-logo {
+    max-width: 120px;
+    filter: drop-shadow(0 0 10px rgba(30,144,255,0.6));
 }
 
-/* Botão sortear times */
-.btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    color: #f1f1f1;
-}
-.btn-secondary:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
-    color: #ffffff;
+/* TÍTULO */
+.champions-title {
+    font-size: 2.8rem;
+    border-bottom: 3px solid #1e90ff;
+    display: inline-block;
+    padding-bottom: 10px;
 }
 
-/* Botão sortear grupos */
+/* CARD PADRÃO */
+.champions-card {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.champions-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 36px rgba(30,144,255,0.35);
+}
+
+/* HEADER CARD */
+.champions-card-header {
+    background: linear-gradient(to right, #1e90ff, #0a58ca);
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 2px;
+    padding: 14px;
+    font-size: 1.2rem;
+}
+
+/* ÍCONES */
+.dashboard-icon {
+    font-size: 3rem;
+    color: #1e90ff;
+}
+
+/* BOTÕES */
 .btn-warning {
-    background-color: #f0b429;
-    border-color: #f0b429;
-    color: #1b263b;
-    font-weight: 600;
-}
-.btn-warning:hover {
-    background-color: #d9a21f;
-    border-color: #d9a21f;
-    color: #0d1b2a;
-}
-
-/* Ícones */
-.text-secondary {
-    color: #c0c0c0 !important;
+    color: #0a1428;
 }
 </style>
+
 {% endblock %}

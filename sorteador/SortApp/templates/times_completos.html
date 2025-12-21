@@ -1,102 +1,180 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container-fluid py-5 champions-bg">
+
+    <!-- Título -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-light champions-title">
+            Todos os Times e Jogadores
+        </h1>
+        <p class="text-secondary">Cedro Champions Cup</p>
+    </div>
+
+    <!-- Grid de Times -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 justify-content-center">
+
+        {% for item in times_com_overall %}
+        {% with time=item.obj overall_total=item.overall_total %}
+        <div class="col">
+
+            <div class="champions-card h-100">
+
+                <div class="p-4 d-flex align-items-center justify-content-between gap-3 flex-wrap">
+
+                    <div class="d-flex align-items-center gap-3">
+                        {% if time.escudo %}
+                            <img src="{{ time.escudo.url }}"
+                                 alt="Escudo de {{ time.nome }}"
+                                 class="team-shield-sm">
+                        {% endif %}
+                        <h4 class="mb-0 fw-bold text-light">
+                            {{ time.nome }}
+                        </h4>
+                    </div>
+
+                    <span class="overall-badge">
+                        {{ overall_total }}
+                    </span>
+
+                </div>
+
+                <div class="champions-divider"></div>
+
+                <!-- Jogadores -->
+                <div class="list-group list-group-flush champions-list">
+
+                    {% for jogador in time.jogadores.all %}
+                        <div class="list-group-item champions-list-item d-flex align-items-center justify-content-between">
+
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="player-icon">
+                                    {% if jogador.classificacao == 1 %}
+                                        <span title="Goleiro">🥅</span>
+                                    {% elif jogador.classificacao == 2 %}
+                                        <span class="badge bg-warning text-dark fw-bold"
+                                              title="Capitão"
+                                              style="font-family: monospace;">
+                                            C
+                                        </span>
+                                    {% elif jogador.classificacao >= 3 %}
+                                        <span title="Jogador de Linha">👕</span>
+                                    {% endif %}
+                                </div>
+
+                                <span class="text-light">
+                                    {{ jogador.nome }}
+                                </span>
+                            </div>
+
+                        </div>
+                    {% empty %}
+                        <div class="p-3 text-center text-secondary">
+                            Nenhum jogador cadastrado.
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+        {% endwith %}
+        {% empty %}
+            <div class="text-center text-secondary">
+                Nenhum time cadastrado.
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- Voltar -->
+    <div class="text-center mt-5">
+        <a href="{% url 'listar_times' %}" class="btn btn-outline-light px-4">
+            ← Voltar para lista de times
+        </a>
+    </div>
+
+</div>
+
 <style>
-  body {
-    background: linear-gradient(to bottom, #0d1b2a, #1b263b);
-    color: white;
-    font-family: 'Arial', sans-serif;
-  }
+/* FUNDO CHAMPIONS */
+.champions-bg {
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1b3a6f, #0a1428 70%);
+}
 
-  .card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
+/* TÍTULO */
+.champions-title {
+    font-size: 2.6rem;
+    border-bottom: 3px solid #1e90ff;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+/* CARD */
+.champions-card {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
+}
 
-  .card:hover {
+.champions-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 6px 12px rgba(0, 180, 216, 0.25);
-  }
+    box-shadow: 0 12px 32px rgba(30,144,255,0.35);
+}
 
-  .numero-time {
-    background: linear-gradient(135deg, #0077b6, #00b4d8);
-    color: white;
+/* ESCUDOS */
+.team-shield-sm {
+    height: 60px;
+    width: auto;
+    filter: drop-shadow(0 0 6px rgba(30,144,255,0.6));
+}
+
+/* BADGE OVERALL */
+.overall-badge {
+    background: linear-gradient(135deg, #1e90ff, #00b4ff);
+    color: #fff;
     font-weight: bold;
     padding: 10px 18px;
-    border-radius: 12px;
+    border-radius: 14px;
     font-size: 1.1rem;
+    min-width: 60px;
     text-align: center;
-    display: inline-block;
-    min-width: 55px;
-  }
+}
 
-  .d-flex-between {
+/* DIVISOR */
+.champions-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.12);
+}
+
+/* LISTA */
+.champions-list {
+    background: transparent;
+}
+
+.champions-list-item {
+    background: rgba(10, 20, 40, 0.6);
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.champions-list-item:hover {
+    background: rgba(30, 144, 255, 0.2);
+}
+
+/* ÍCONE */
+.player-icon {
+    width: 26px;
+    height: 26px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-  }
-
-  .list-group-item {
-    background-color: transparent;
-    border: none;
-    color: white;
-  }
+    justify-content: center;
+    font-size: 1.1rem;
+}
 </style>
 
-<div class="container">
-  <h2 class="mb-4 text-center">Todos os Times e Jogadores</h2>
-
-  <!-- Grid responsivo -->
-  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    {% for item in times_com_overall %}
-      {% with time=item.obj overall_total=item.overall_total %}
-      <div class="col">
-        <div class="card h-100 shadow-sm border-0">
-          <div class="card-body">
-            <div class="d-flex-between mb-3">
-              <div class="d-flex align-items-center gap-3">
-                {% if time.escudo %}
-                  <img src="{{ time.escudo.url }}" alt="Escudo de {{ time.nome }}" 
-                       style="height: 60px; width: auto;">
-                {% endif %}
-                <h4 class="mb-0">{{ time.nome }}</h4>
-              </div>
-              <span class="numero-time">{{ overall_total }}</span>
-            </div>
-
-            <div class="list-group">
-              {% for jogador in time.jogadores.all %}
-                <div class="list-group-item d-flex align-items-center justify-content-between p-2">
-                  <div class="d-flex align-items-center gap-2">
-                    <div style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
-                      {% if jogador.classificacao == 1 %}
-                        <span title="Goleiro" style="font-size: 1rem;">🥅</span>
-                      {% elif jogador.classificacao == 2 %}
-                        <span class="badge bg-warning text-dark fw-bold" title="Capitão" 
-                              style="font-family: monospace; font-size: 0.9rem;">C</span>
-                      {% elif jogador.classificacao >= 3 %}
-                        <span title="Jogador de Linha" style="font-size: 1rem;">👕</span>
-                      {% endif %}
-                    </div>
-                    <span style="font-size: 0.95rem;">{{ jogador.nome }}</span>
-                  </div>
-                </div>
-              {% empty %}
-                <p class="text-muted text-center small mt-2">Nenhum jogador cadastrado.</p>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endwith %}
-    {% empty %}
-      <p class="text-muted text-center">Nenhum time cadastrado.</p>
-    {% endfor %}
-  </div>
-
-  <div class="mt-4 text-center">
-    <a href="{% url 'listar_times' %}" class="btn btn-outline-secondary">&larr; Voltar para lista de times</a>
-  </div>
-</div>
 {% endblock %}
