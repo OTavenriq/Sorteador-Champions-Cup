@@ -229,9 +229,6 @@ def listar_times_completos(request):
     }
     return render(request, 'times_completos.html', context)
 
-import random
-from collections import defaultdict
-
 def sortear_grupos(request):
     times = list(Time.objects.prefetch_related('jogadores').all())
 
